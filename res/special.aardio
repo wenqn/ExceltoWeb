@@ -1,0 +1,109 @@
+import win.ui;
+import fsys.dlg;
+import fsys;
+import sqlite;
+import io;
+
+/*DSG{{*/
+var winform = win.form(text="aardio form";right=593;bottom=153;border="none";exmode="toolwindow";mode="child";parent=...)
+winform.add(
+button={cls="button";text="下载excel模板";left=34;top=37;right=119;bottom=69;z=3};
+button2={cls="button";text="浏览";left=289;top=86;right=374;bottom=118;z=4};
+button3={cls="button";text="导入";left=383;top=86;right=468;bottom=118;z=5};
+button4={cls="button";text="发布查询";left=476;top=86;right=561;bottom=118;z=6};
+button5={cls="button";text="浏览信息";left=137;top=37;right=222;bottom=69;z=7};
+edit={cls="edit";text="选择excel文件";left=34;top=90;right=278;bottom=116;edge=1;z=1};
+groupbox={cls="groupbox";text="没有可供打开的项目";left=11;top=8;right=582;bottom=148;ah=1;aw=1;cp=1;edge=1;z=2}
+)
+/*}}*/
+
+loadcodex("\res\database.aardio");
+
+winform.button4.oncommand = function(id,event){
+	//winform.msgbox( winform.button4.text );
+	import thread.command;
+	listener = thread.command();
+	
+	thread.invoke( 
+		function(hwnd){
+			//import webaar;
+			
+			loadcodex("\www\main.aardio");
+		},listener.hwnd
+	)
+	
+	
+}
+
+
+
+//浏览信息按钮
+winform.button5.oncommand = function(id,event){
+	//winform.msgbox( winform.button5.text );
+//	dbpath = fsys.dlg.open("数据库文件(*.db)|*.db|所有文件(*.*)|*.*|","选择浏览的数据库","/www",,,);
+//	win.msgbox(ct.dbpath);
+	var db = open_db(ct.dbpath);
+	if(!db){
+		return winform.msgbox("数据库不存在");
+	}
+	var listForm = winform.loadForm("\res\listForm.aardio");
+	var sql = "select * from [" ++ ct.tables ++ "]";
+	dbto_listview(listForm.listview,db,ct.tables,sql);
+	db.close();
+}
+
+
+winform.groupbox.oncommand = function(id,event){
+	//winform.msgbox( winform.groupbox.text );
+	
+	
+}
+
+//导入按钮
+winform.button3.oncommand = function(id,event){
+	//winform.msgbox( winform.button3.text );
+		
+	if(!string.endWith(winform.edit.text,".xlsx")){
+		win.msgbox("请选择一个excel文件");
+	}else {
+		var db = creater_db(ct.dbpath);
+		if(!db) return winform.msgbox("数据库创建失败");
+		else {
+			var excel = winform.edit.text;
+			excelto_db(excel,db,ct.tables);
+			db.close();
+		}
+	}
+	
+}
+
+//浏览按钮
+winform.button2.oncommand = function(id,event){
+	//winform.msgbox( winform.button2.text );
+	winform.edit.text = fsys.dlg.open();
+	
+}
+
+//模板文件
+winform.button.oncommand = function(id,event){
+	//winform.msgbox( winform.button.text );
+	//var dir = "d:\tchsh";
+	var dir = fsys.getSpecial();//桌面	
+	var srcfile = ct.file;
+	if(!io.exist(srcfile)){
+		win.msgbox("没有该项目的内置模板，请直接导入Excel文件");
+		return ;
+	}
+	
+	var dstfile = fsys.dlg.save(,"下载模板文件",dir,winform,,ct.title ++ "录入模板.xlsx");	
+	if(dstfile){
+		fsys.copy(srcfile,dstfile,,,winform.hwnd)			
+		winform.msgbox("保存到："+dstfile)
+	}	
+}
+
+winform.enableDpiScaling();
+winform.show();
+win.loopMessage();
+
+return winform;

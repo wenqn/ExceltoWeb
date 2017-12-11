@@ -1,0 +1,92 @@
+import win.ui;
+/*DSG{{*/
+var winform = win.form(text="ExceltoWeb";right=404;bottom=177;mode="popup";parent=...)
+winform.add(
+button={cls="button";text="重置";left=180;top=138;right=241;bottom=160;z=2};
+button2={cls="button";text="取消";left=252;top=138;right=314;bottom=160;z=3};
+button3={cls="button";text="确定";left=325;top=138;right=386;bottom=160;z=4};
+edit={cls="edit";left=112;top=43;right=224;bottom=68;edge=1;z=9};
+edit2={cls="edit";left=290;top=43;right=364;bottom=68;edge=1;z=10};
+edit3={cls="edit";text="localhost";left=112;top=76;right=224;bottom=101;edge=1;z=11};
+edit4={cls="edit";left=290;top=76;right=364;bottom=101;edge=1;z=12};
+groupbox={cls="groupbox";text="新增项目";left=18;top=19;right=389;bottom=125;edge=1;z=1};
+static={cls="static";text="项目名称";left=42;top=49;right=102;bottom=68;align="center";transparent=1;z=5};
+static2={cls="static";text="项目短名";left=234;top=49;right=294;bottom=68;align="center";notify=1;transparent=1;z=6};
+static5={cls="static";text="服务器地址";left=42;top=84;right=102;bottom=103;align="center";notify=1;transparent=1;z=7};
+static6={cls="static";text="端  口";left=234;top=84;right=294;bottom=103;align="center";transparent=1;z=8}
+)
+/*}}*/
+
+class Item{
+	ctor( title,shortName,ip,port ){
+		this.title = title;
+		this.shortName = shortName;
+		this.dbpath = "/www/" ++ shortName ++ "/" ++ shortName ++ ".db";
+		this.dbname = shortName;
+		this.tables = shortName;
+		this.fields = {};
+		this.file = "/res/模板文件/" ++ title ++ "录入模板.xlsx";
+		this.ip = ip;
+		this.port = port;
+	};
+	type=me;
+	/*对象的所有成员必须用分号分隔*/
+	
+	title;
+	shortName;
+	dbpath;
+	dbname;
+	tables;
+	fields;
+	file;
+	ip;
+	port;
+}
+
+//确定按钮
+winform.button3.oncommand = function(id,event){
+	//winform.msgbox( winform.button3.text );
+	if(winform.edit.text == "" || winform.edit2.text == "") return win.msgbox("项目名称和短名不能省略！");
+	var item = Item(winform.edit.text,winform.edit2.text,winform.edit3.text,winform.edit4.text);
+	
+	//存入配置文件，以shortName命名键名
+	import fsys.config;
+	config = fsys.config("/config/");
+	config.items[item.shortName] = item;	
+	
+	//更新当前项目为新项目
+	currentItem = item;
+	config.items.currentItem = currentItem;
+	
+	//更新全局变量ct
+	ct = currentItem;
+	sp.groupbox.text = ct.title;
+	
+	config.items.save();//即时保存
+	win.msgbox("项目保存成功！");
+	winform.close();
+}
+
+
+//取消按钮
+winform.button2.oncommand = function(id,event){
+	//winform.msgbox( winform.button2.text );
+	winform.close();
+	
+}
+
+
+//重置按钮
+winform.button.oncommand = function(id,event){
+	//winform.msgbox( winform.button.text );
+	winform.edit.text = "";
+	winform.edit2.text = "";
+	winform.edit3.text = "localhost";
+	winform.edit4.text = "";
+	
+}
+winform.enableDpiScaling();
+winform.show();
+
+win.loopMessage();
+return winform;

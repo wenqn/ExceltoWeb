@@ -1,0 +1,43 @@
+import console;
+
+// dbto_listview
+var s =  {{11;22;33;44;55;66;77;88;99;100};{111;222;333;444;555;666;777;888;999;1000}}
+
+var str = "";
+for(i=1;#s[1];1){
+	str += "a" ++ i ++ ",";
+
+}
+str = string.sub(str,0,-2);
+
+var rowid = 1//记录序号
+console.log(str)
+
+for str in s[1] {
+	var t = {}	
+	table.push(t,rowid);	
+	table.push(t,s[str])
+	console.dump(t)
+	rowid += 1
+}
+
+var tab = {}
+table.push(tab,t)
+console.dump(tab)
+
+
+var tab = {"a";"b";"c"}
+var tab2 = {a="2";b="3";c="4"}
+
+
+console.dump(table.tostring(tab2))	
+
+loadcodex("/res/database.aardio");
+path = "/www/tcs2017/tcs.db"
+io.open()
+fpath=io.splitpath(path)
+console.dump(fpath,dir)
+console.log(fpath.dir)
+console.log(io.fullpath(fpath.dir))
+
+console.pause();

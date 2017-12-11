@@ -1,0 +1,67 @@
+import win.ui;
+import win.ui.atom;
+import win.util.tray;
+/*DSG{{*/
+mainForm = win.form(text="ExceltoWeb";right=728;bottom=211)
+mainForm.add(
+button={cls="button";text="新建项目";left=24;top=25;right=80;bottom=48;z=5};
+button2={cls="button";text="打开项目";left=24;top=62;right=80;bottom=85;z=6};
+custom3={cls="custom";text="custom3";left=94;top=11;right=714;bottom=148;edge=1;transparent=1;z=1};
+progress={cls="progress";left=248;top=171;right=439;bottom=191;edge=1;hide=1;max=100;min=0;z=2};
+static={cls="static";text=" 已经导入";left=248;top=151;right=439;bottom=174;align="center";hide=1;transparent=1;z=3};
+static2={cls="static";text="山东省淄博第五中学";left=592;top=182;right=707;bottom=199;align="right";transparent=1;z=4}
+)
+/*}}*/
+
+var atom,hwnd/*冲突窗口的句柄,该函数会自动激活此窗口*/ = mainForm.atom("AF0E08B4-5B41-410E-B133-4005706D5463");
+if(!atom){
+	/*为窗口设置原子值可以避免一个程序重复运行多个实例*/
+	win.quitMessage();	return;
+}
+
+
+tray = win.util.tray(mainForm.hwnd) //创建托盘图标
+tray.tip = "你的鼠标移到我的托盘图标上了" //设置鼠标提示 
+tray.pop("这是一个托盘图标","汽泡提示")
+sp = mainForm.custom3.loadForm("\res\special.aardio");
+
+var init = function(){
+
+	//加载配置文件
+	import fsys.config;
+    config = fsys.config("/config/");
+	var crtItem = config.items.currentItem;
+	
+	if(!crtItem){
+		win.msgbox("没有可以打开的项目，请先添加一个项目");
+		mainForm.loadForm("/res/addItem.aardio");
+	}else {
+		sp.groupbox.text = crtItem.title;
+		return crtItem;
+		
+	}
+	
+	
+}
+
+global.ct = init();
+
+//打开项目
+mainForm.button2.oncommand = function(id,event){
+	//mainForm.msgbox( mainForm.button2.text );
+	mainForm.loadForm("/res/openItem.aardio");
+	
+}
+
+//新建项目
+mainForm.button.oncommand = function(id,event){
+	//mainForm.msgbox( mainForm.button.text );
+	mainForm.loadForm("/res/addItem.aardio");
+	
+}
+
+
+mainForm.enableDpiScaling();
+mainForm.show();
+
+return win.loopMessage(); 

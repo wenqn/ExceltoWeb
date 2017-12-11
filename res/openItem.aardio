@@ -1,0 +1,84 @@
+import win.ui;
+import config;
+
+import win.ui.scrollbar;
+/*DSG{{*/
+var winform = win.form(text="ExceltoWeb";right=312;bottom=328;parent=...)
+winform.add(
+button={cls="button";text="取消";left=117;top=289;right=194;bottom=317;z=2};
+button2={cls="button";text="确定";left=208;top=289;right=285;bottom=317;z=3};
+custom={cls="custom";text="custom";left=26;top=41;right=286;bottom=275;z=4};
+groupbox={cls="groupbox";text="选择一个项目打开";left=19;top=16;right=297;bottom=285;edge=1;z=1}
+)
+/*}}*/
+
+winform.button2.oncommand = function(id,event){
+	//winform.msgbox( winform.button2.text );
+	var i = 1;
+	var flag = false;
+	var radio = winform.custom.radiobutton1;
+	while (radio) {
+			
+		if(radio.checked){
+			ct = metI[radio.text];
+			..sp.groupbox.text = ct.title;
+			flag = true;
+			winform.close();
+		}
+				
+		i++;
+		radio = winform.custom["radiobutton" ++ i]	
+	} 
+	
+	if(flag == false){
+		win.msgbox("请选择一个项目");
+	}
+
+}
+
+
+winform.button.oncommand = function(id,event){
+	//winform.msgbox( winform.button.text );
+	winform.close();
+	
+}
+
+
+winform.enableDpiScaling();
+winform.show();
+
+var scrollbar = win.ui.scrollbar(winform.custom.hwnd,true);
+scrollbar.setRange(1,100,10)
+
+var config = fsys.config("/config/");
+if(!config.items){
+	return win.msgbox("没找到名为 items.table 的配置文件");
+} else if(config.items == {}){
+	return win.msgbox("没有可供打开的项目，请先新建一个项目")
+}
+
+var i = 1;
+var x = 15;
+var y = 15;
+    metI = {};
+for(k,v in config.items){
+	//_gc ????console.dump(k),config.items里的不可见项目
+	if(k=="_gc" || k=="currentItem"){
+		continue ;
+	}
+	winform.custom.add(
+		["radiobutton" ++ i] = {cls="radiobutton";text=v.title;left=x;top=y;right=x+200;bottom=y+40;z=i}
+	)
+	metI[v.title] = v;//构建反向查找字典
+
+	y += 30;
+	i += 1;
+}
+
+
+
+
+win.loopMessage();
+return winform;
+
+

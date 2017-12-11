@@ -1,0 +1,165 @@
+import sqlite;
+import console;
+import fsys;
+import io;
+
+/** 待用
+var tablename = "special";
+var fieldnames = "testid,testnob,stnumber,stname,stsex,shcool,special,specialnum,spscore,note";
+**/
+
+creater_db = function(dbname){
+	dbname = string.find(dbname,".db") ? dbname : dbname+".db";
+	
+	//目录不存在，新建目录
+	dpath = io.splitpath(dbname);
+	dir = dpath.dir;
+	fsys.createDir(io.fullpath(dir));
+
+	
+//	path = "\www\tcs\" + dbname;
+	if(!io.exist(dbname)) return sqlite(dbname);//文件不存在，直接创建
+	else {//已经存在，选择覆盖或追加方式创建，sqlite（）默认追加方式打开
+		var f = win.msgbox("数据库已经存在，是否覆盖？选择‘是’进行覆盖，选择‘否’以追加方式打开，‘取消’返回",,0x03);
+		if (f=6) /*yes*/ {
+			if(io.remove(dbname)) return sqlite(dbname);
+			else {win.msgbox("删除数据库错误");return false;}
+		}
+		else if (f=7) /*no*/ return sqlite(dbname);
+		else /*cancel*/ return false;
+	}
+	
+}
+
+open_db = function(dbname){
+	dbname = string.find(dbname,".db") ? dbname : dbname+".db";
+	if(!io.exist(dbname)) return false;
+	return sqlite(dbname)/* sqlite.open(dbname) error*/
+}
+
+
+excelto_db = function(file,db,tables){
+	import com;
+	
+	var excel = com.CreateObject("Excel.Application");
+	var book = excel.Workbooks.open(file);
+	var sheet = book.Sheets(1);
+	
+	if(excel){
+		excel.Visible = false;
+		excel.alerts = false;
+	}
+	
+	..mainForm.progress.hide = false;//显示进度条
+	..mainForm.progress.max = sheet.UsedRange.Rows.Count-1;
+	..mainForm.static.hide = false;//显示进度标签
+	
+	
+	//读入第一行标题行
+	var title = {};
+	for(j=1;sheet.UsedRange.Columns.Count;1){
+		title[j] = sheet.Cells(1,j).getValue2();
+		if(!title[j]){
+			return win.msgbox("有空标题列，请检查模板文件");
+		}
+	
+	}
+	
+	//拼接建表sql
+	var str = "";
+	for(i=1;#title;1){
+		str += title[i] ++ ",";
+	
+	}
+	str = string.sub(str,0,-2);//去掉最后一个逗号
+	
+	var sql = "CREATE TABLE " ++ tables ++ "("  ++ str ++ ")";
+	if(not db.existsTable(tables)){
+		db.exec(sql);
+	}
+	
+	//得到所有字段名
+	var fields = db.prepare("SELECT * FROM [" ++ tables ++ "]").getColumns();
+	var sql = "INSERT INTO " ++ tables ++ " VALUES (";
+	for(k,v in fields){
+			sql += ("@" + v +",");						
+	}
+	sql = string.sub(sql,0,-2);//去掉最后一个逗号
+	sql += ");";
+
+	//从excel每读一行，写入数组row，再由数组写入数据库
+
+	var tab = {};
+	for(i=2;sheet.UsedRange.Rows.Count;1){//第一行标题跳过,i=2开始
+		var row = {};
+		var value = {}; 
+		for(j=1;sheet.UsedRange.Columns.Count;1){
+			value[j] = sheet.Cells(i,j).getValue2();
+			value[j] = value[j] : ""; //null转换为空值
+		}
+		for(k=1;#fields;1){
+			row[fields[k]] = value[k];
+		}
+		
+		table.push(tab,row);
+		
+		//每50条写入一次数据库	
+		if(i%50==0 || i==sheet.UsedRange.Rows.Count){
+			db.beginTrans();//开启事务
+			for(k,v in tab){			
+					db.prepare(sql).step(v);
+					
+				}	
+			tab = {};	
+			db.commitTrans();//关闭事务
+		}
+				
+		..mainForm.progress.pos = i;
+		..mainForm.static.text = "已经导入" +(i-1) +"条记录";
+		..mainForm.static.redraw();//防止标签闪烁
+	}
+		
+	..mainForm.progress.hide = true;
+	..mainForm.static.hide = true;
+	
+	var counts = db.getTable("SELECT count(*) FROM [" ++ tables ++ "]");
+	win.msgbox("成功导入" + counts[1]["count(*)"] + "条记录");			
+
+}
+
+
+dbto_listview = function(listView,db,tables,sql){
+	if(not db.existsTable(tables)){
+		return win.msgbox("数据表不存在"); 
+	}
+		
+	var fields = db.prepare(sql).getColumns();
+	
+	listView.clear();
+	listView.setExtended(0x4);
+	listView.insertColumn("序号",70);
+	for(k,v in fields){
+		listView.insertColumn(v,70);
+	
+	}
+	
+	//用数组转存result中数据，插入listview，保持元素顺序与表头一致
+	//取长操作符#只对数组和字符串有效，对字典无效，
+	var result = db.getTable(sql);
+	for(i=1;#result;1){
+		var row = result[i];
+		var t = {};
+		t[1] = i;//第一列行号
+		for(j=1;#fields;1){
+			t[j+1] = row[fields[j]];//第二列开始插入数据
+		}
+			
+		var tab = {};
+		table.push(tab,t);
+		listView.addItem(tab[1]);
+	
+	}
+	
+	win.msgbox("共"+ #result +"条记录")
+	
+}

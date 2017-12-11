@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project ver="10" name="ExceltoWeb" libEmbed="true" icon="..." ui="win" output="ExceltoWeb.exe" CompanyName="单位名称" FileDescription="ExceltoWeb" LegalCopyright="Copyright (C) 作者 2017" ProductName="ExceltoWeb" InternalName="etow" FileVersion="0.0.0.08" ProductVersion="0.0.0.08" publishDir="/Publish/" dstrip="false">
+	<file name="main.aardio" path="main.aardio" comment="main.aardio"/>
+	<folder name="资源文件" path="res" embed="true">
+		<file name="database.aardio" path="res\database.aardio" comment="res\database.aardio"/>
+		<file name="listForm.aardio" path="res\listForm.aardio" comment="res\listForm.aardio"/>
+		<file name="special.aardio" path="res\special.aardio" comment="res\special.aardio"/>
+		<folder name="模板文件" path="res\模板文件" comment="res\模板文件" embed="false">
+			<file name="特长生专业成绩查询录入模板.xlsx" path="res\模板文件\特长生专业成绩查询录入模板.xlsx" comment="res\模板文件\特长生专业成绩查询录入模板.xlsx"/>
+			<file name="特长生总成绩录入模板.xlsx" path="res\模板文件\特长生总成绩录入模板.xlsx" comment="res\模板文件\特长生总成绩录入模板.xlsx"/>
+			<file name="特长生文化课成绩查询录入模板.xlsx" path="res\模板文件\特长生文化课成绩查询录入模板.xlsx" comment="res\模板文件\特长生文化课成绩查询录入模板.xlsx"/>
+		</folder>
+		<file name="addItem.aardio" path="res\addItem.aardio" comment="res\addItem.aardio"/>
+		<file name="test.aardio" path="res\test.aardio" comment="res\test.aardio"/>
+		<file name="openItem.aardio" path="res\openItem.aardio" comment="res\openItem.aardio"/>
+	</folder>
+	<folder name="www" path="www" comment="目录" embed="false">
+		<file name="main.aardio" path="www\main.aardio" comment="www\main.aardio"/>
+		<file name="router.aardio" path="www\router.aardio" comment="www\router.aardio"/>
+		<file name="webmain.aardio" path="www\webmain.aardio" comment="www\webmain.aardio"/>
+		<folder name="lib" path="www\lib" comment="www\lib">
+			<file name="webaar.aardio" path="www\lib\webaar.aardio" comment="www\lib\webaar.aardio"/>
+			<folder name="jQuery" path="www\lib\jQuery" comment="www\lib\jQuery">
+				<file name="jquery.min.js" path="www\lib\jQuery\jquery.min.js" comment="www\lib\jQuery\jquery.min.js"/>
+			</folder>
+			<folder name="sqlite" path="www\lib\sqlite" comment="www\lib\sqlite">
+				<file name="base.aardio" path="www\lib\sqlite\base.aardio" comment="www\lib\sqlite\base.aardio"/>
+				<file name="_.aardio" path="www\lib\sqlite\_.aardio" comment="www\lib\sqlite\_.aardio"/>
+			</folder>
+		</folder>
+		<folder name="tcs" path="www\tcs" comment="www\tcs">
+			<file name="index.aardio" path="www\tcs\index.aardio" comment="www\tcs\index.aardio"/>
+			<file name="query.aardio" path="www\tcs\query.aardio" comment="www\tcs\query.aardio"/>
+			<file name="tcs.db" path="www\tcs\tcs.db" comment="www\tcs\tcs.db"/>
+			<folder name="js" path="www\tcs\js" comment="www\tcs\js"/>
+		</folder>
+		<folder name="tcs2017" path="www\tcs2017" comment="www\tcs2017" embed="false">
+			<file name="tcs2017.db" path="www\tcs2017\tcs2017.db" comment="www\tcs2017\tcs2017.db"/>
+		</folder>
+	</folder>
+</project>
